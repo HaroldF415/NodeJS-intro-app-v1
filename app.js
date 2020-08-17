@@ -56,13 +56,15 @@ const server = http.createServer( (req, res) => {
       // This allows us to use it an store the DATA
       console.log(parsedBody);   
       const message = parsedBody.split('=')[1];
-      fs.writeFileSync('message.txt', message);
-      res.writeHead( 302, {Location: '/'} );
-      return res.end(); 
-      
+      // With the following line of code We BLOCK execution of the next lines of code until this file is DONE
+      // This is not good because the file could be bigger and take longer to complete. 
+      fs.writeFile('message.txt', message, err => {
+        res.writeHead( 302, {Location: '/'} );
+        return res.end(); 
+      });
+
     });
 
-   
   }
 
   res.setHeader('Content-Type', 'text/html');
