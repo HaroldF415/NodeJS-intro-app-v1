@@ -2,6 +2,7 @@
 
 // We will use it but never overide
 const http = require('http');
+const fs = require('fs');
 
 // This is not required when creating a server. It can be also be passed in as an annonymous function
 // reqListener = (req, res) => {
@@ -15,7 +16,9 @@ const server = http.createServer( (req, res) => {
 
   // Load a page where the user can ENTER some DATA which then we STORE in a file on the SERVER once it is SENT
   // PARSE the URL
+  // PARSE the METHOD
   const url = req.url;
+  const method = req.method;
 
   if( url === '/' ){
 
@@ -25,6 +28,16 @@ const server = http.createServer( (req, res) => {
    res.write('</html>');
    return res.end();   
 
+  }
+
+  if( url === '/message' && method === 'POST' ){
+    fs.writeFileSync('message.txt', 'DUMMY');
+    // Status code 302 means REDIRECTION
+    res.writeHead( 302, {Location: '/'} );
+    // res.writeHead() can be written as follows
+    // res.statusCode( 302 );
+    // res.setHeader( 'Location', '/' );
+    return res.end();    
   }
 
   res.setHeader('Content-Type', 'text/html');
