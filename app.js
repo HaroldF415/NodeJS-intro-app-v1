@@ -45,7 +45,7 @@ const server = http.createServer( (req, res) => {
     
     // Registering another EVENT LISTENER
     // Then 'end' LISTENER will fire once its DONE parsing the INCOMING REQUEST DATA
-    req.on('end', () => {
+    return req.on('end', () => {
       // To work with all those chunks of DATA we must BUFFER them
       // The BUFFER OBJECT is available GLOBALLY thanks to NODE.js
       // This will create a NEW BUFFER and will add all the CHUNKS of DATA from the BODY
@@ -57,10 +57,12 @@ const server = http.createServer( (req, res) => {
       console.log(parsedBody);   
       const message = parsedBody.split('=')[1];
       fs.writeFileSync('message.txt', message);
+      res.writeHead( 302, {Location: '/'} );
+      return res.end(); 
+      
     });
 
-    res.writeHead( 302, {Location: '/'} );
-    return res.end();    
+   
   }
 
   res.setHeader('Content-Type', 'text/html');
